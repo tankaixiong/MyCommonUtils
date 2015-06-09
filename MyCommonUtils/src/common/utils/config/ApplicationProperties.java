@@ -69,6 +69,8 @@ public class ApplicationProperties {
 			} catch (IOException e) {
 				logger.error("{}", e);
 			}
+			properties.clear();
+			properties=null;
 		}
 	}
 

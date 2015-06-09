@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -282,6 +283,79 @@ public class RedisSupport {
 	}
 
 	/**
+	 * 往集合中增加一个对象
+	 * 
+	 * @param key
+	 * @param members
+	 */
+	public void zadd(String key, long score, String member) {
+		Jedis jedis = getJedis();
+		try {
+			jedis.zadd(key, score, member);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+	}
+
+	/**
+	 * set删除一个对象
+	 * 
+	 * @param key
+	 * @param members
+	 */
+	public void srem(String key, String member) {
+		Jedis jedis = getJedis();
+		try {
+			jedis.srem(key, member);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+	}
+
+	/**
+	 * zset删除一个对象
+	 * 
+	 * @param key
+	 * @param members
+	 */
+	public void zrem(String key, String member) {
+		Jedis jedis = getJedis();
+		try {
+			jedis.zrem(key, member);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+	}
+
+	/**
+	 * 返回有序集 key 中，成员 member 的 score 值
+	 * 
+	 * @param key
+	 * @param members
+	 */
+	public Double zscore(String key, String member) {
+		Jedis jedis = getJedis();
+		try {
+			return jedis.zscore(key, member);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return -1d;
+	}
+
+	/**
 	 * hash表field's value增操作，增值为long类型，适用于增加次数
 	 * 
 	 * @param key
@@ -392,6 +466,70 @@ public class RedisSupport {
 			returnResource(jedis);
 		}
 		return null;
+	}
+
+	public long hdel(String key, String field) {
+		Jedis jedis = getJedis();
+		try {
+			return jedis.hdel(key, field);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return 0;
+	}
+
+	public Map<String, String> hgetAll(String key) {
+		Jedis jedis = getJedis();
+		try {
+			return jedis.hgetAll(key);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return null;
+	}
+
+	public Set<String> sunion(String... keys) {
+		Jedis jedis = getJedis();
+		try {
+			return jedis.sunion(keys);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return null;
+	}
+
+	public void del(String... keys) {
+		Jedis jedis = getJedis();
+		try {
+			jedis.del(keys);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+	}
+
+	public long llen(String key) {
+		Jedis jedis = getJedis();
+		try {
+			return jedis.llen(key);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return 0;
 	}
 
 }
