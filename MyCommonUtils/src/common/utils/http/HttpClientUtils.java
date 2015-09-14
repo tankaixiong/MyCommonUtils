@@ -35,9 +35,10 @@ public class HttpClientUtils {
 
 		GetMethod fileGet = new GetMethod(url); // 若没有commons-codec-1.4-bin.zip, 这里将会出错
 		InputStream in = null;
+		HttpClient client = null;
 		try {
 
-			HttpClient client = new HttpClient();
+			client = new HttpClient();
 			client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
 
 			int status = client.executeMethod(fileGet);
@@ -62,6 +63,8 @@ public class HttpClientUtils {
 			IOUtils.closeQuietly(in);
 
 			fileGet.releaseConnection();
+
+			client.getHttpConnectionManager().closeIdleConnections(0);
 		}
 
 		return null;
@@ -71,6 +74,7 @@ public class HttpClientUtils {
 
 		PostMethod filePost = new PostMethod(url); // 若没有commons-codec-1.4-bin.zip, 这里将会出错
 		InputStream in = null;
+		HttpClient client = null;
 		try {
 
 			if (params != null && !params.isEmpty()) {
@@ -81,7 +85,7 @@ public class HttpClientUtils {
 				}
 			}
 
-			HttpClient client = new HttpClient();
+			client = new HttpClient();
 			client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
 
 			int status = client.executeMethod(filePost);
@@ -106,6 +110,8 @@ public class HttpClientUtils {
 			IOUtils.closeQuietly(in);
 
 			filePost.releaseConnection();
+
+			client.getHttpConnectionManager().closeIdleConnections(0);
 		}
 
 		return null;
@@ -123,6 +129,7 @@ public class HttpClientUtils {
 
 		PostMethod filePost = new PostMethod(url); // 若没有commons-codec-1.4-bin.zip, 这里将会出错
 		InputStream in = null;
+		HttpClient client = null;
 		try {
 			List<Part> partList = new ArrayList<Part>();
 
@@ -140,7 +147,7 @@ public class HttpClientUtils {
 
 			filePost.setRequestEntity(new MultipartRequestEntity(partList.toArray(new Part[partList.size()]), filePost.getParams()));
 
-			HttpClient client = new HttpClient();
+			client = new HttpClient();
 			client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
 
 			int status = client.executeMethod(filePost);
@@ -165,6 +172,8 @@ public class HttpClientUtils {
 			IOUtils.closeQuietly(in);
 
 			filePost.releaseConnection();
+
+			client.getHttpConnectionManager().closeIdleConnections(0);
 		}
 
 		return null;
