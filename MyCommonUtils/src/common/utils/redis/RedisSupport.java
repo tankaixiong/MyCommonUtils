@@ -2,6 +2,7 @@ package common.utils.redis;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisSentinelPool;
+import redis.clients.jedis.Tuple;
 
 /**
  * redis的支持类,使用jedis类库来操作redis
@@ -116,6 +118,34 @@ public class RedisSupport {
 		}
 	}
 
+	public String type(String key) {
+		Jedis jedis = getJedis();
+		String keyType = "";
+		try {
+			keyType = jedis.type(key);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return keyType;
+	}
+
+	public long expire(String key, int seconds) {
+		Jedis jedis = getJedis();
+		long retVal = 0l;
+		try {
+			retVal = jedis.expire(key, seconds);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return retVal;
+	}
+
 	public void set(String key, String value) {
 		Jedis jedis = getJedis();
 		try {
@@ -126,6 +156,34 @@ public class RedisSupport {
 		} finally {
 			returnResource(jedis);
 		}
+	}
+
+	public Long incr(String key) {
+		Jedis jedis = getJedis();
+		long retVal = 0l;
+		try {
+			retVal = jedis.incr(key);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return retVal;
+	}
+
+	public Long incrBy(String key, long integer) {
+		Jedis jedis = getJedis();
+		long retVal = 0l;
+		try {
+			retVal = jedis.incrBy(key, integer);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return retVal;
 	}
 
 	public String get(String key) {
@@ -151,6 +209,19 @@ public class RedisSupport {
 		} finally {
 			returnResource(jedis);
 		}
+	}
+
+	public List<String> lrange(String redisKey, long start, long end) {
+		Jedis jedis = getJedis();
+		try {
+			return jedis.lrange(redisKey, start, end);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return new ArrayList<String>();
 	}
 
 	public void lpushRtbLog(String key, String value) {
@@ -245,6 +316,35 @@ public class RedisSupport {
 	}
 
 	/**
+	 * <p>
+	 * 
+	 * @Title: zcard
+	 *         </p>
+	 *         <p>
+	 * @Description: 返回key中包含的member数量
+	 *               </p>
+	 *               <p>
+	 * @author Comsys-xuanning
+	 *         </p>
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public long zcard(String key) {
+		Jedis jedis = getJedis();
+		try {
+			return jedis.zcard(key);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return 0l;
+	}
+
+	/**
 	 * 判断某个对象是否在集合中，适用于做i c a 去重
 	 * 
 	 * @param key
@@ -298,6 +398,37 @@ public class RedisSupport {
 		} finally {
 			returnResource(jedis);
 		}
+	}
+
+	/**
+	 * <p>
+	 * 
+	 * @Title: zrevrangeWithScores
+	 *         </p>
+	 *         <p>
+	 * @Description: 查询出前几条记录
+	 *               </p>
+	 *               <p>
+	 * @author Comsys-xuanning
+	 *         </p>
+	 * 
+	 * @param key
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public Set<Tuple> zrevrangeWithScores(String key, long start, long end) {
+		Jedis jedis = getJedis();
+		try {
+			return jedis.zrevrangeWithScores(key, start, end);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return null;
 	}
 
 	/**
@@ -430,6 +561,20 @@ public class RedisSupport {
 		return 0;
 	}
 
+	public long scard(String redisKey) {
+
+		Jedis jedis = getJedis();
+		try {
+			return jedis.scard(redisKey);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return 0l;
+	}
+
 	public Set<String> smembers(String key) {
 		Jedis jedis = getJedis();
 		try {
@@ -453,6 +598,19 @@ public class RedisSupport {
 		} finally {
 			returnResource(jedis);
 		}
+	}
+
+	public long hlen(String redisKey) {
+		Jedis jedis = getJedis();
+		try {
+			return jedis.hlen(redisKey);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return 0l;
 	}
 
 	public String hget(String key, String field) {
@@ -530,6 +688,20 @@ public class RedisSupport {
 			returnResource(jedis);
 		}
 		return 0;
+	}
+
+	public Set<String> keys(String keyPattern) {
+		Jedis jedis = getJedis();
+		try {
+			return jedis.keys(keyPattern);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return null;
 	}
 
 }
