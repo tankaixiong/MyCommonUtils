@@ -1,6 +1,7 @@
 package common.utils.json;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,9 @@ public class JsonUtils {
 		objectMapper = new ObjectMapper();
 		objectMapper.setSerializationInclusion(Include.NON_NULL);// null 不参与转换
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		
+		SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		objectMapper.setDateFormat(dateFormat);
 	}
 
 	public static String toJson(Object object) {
