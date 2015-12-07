@@ -275,6 +275,18 @@ public class RedisSupport {
 		}
 		return null;
 	}
+	public List<String> brpop(int timeout,String key) {
+		Jedis jedis = getJedis();
+		try {
+			return jedis.brpop(timeout, key);
+		} catch (Exception e) {
+			logger.error("{}", e);
+			returnBrokenResource(jedis);
+		} finally {
+			returnResource(jedis);
+		}
+		return null;
+	}
 
 	public String rpop(String key) {
 		Jedis jedis = getJedis();
